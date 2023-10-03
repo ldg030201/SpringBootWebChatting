@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<script src="http://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="/js/jquery-3.5.1.min.js"></script>
 <th:block th:fragment="content">
     <div class="container">
         <div>
@@ -15,22 +15,23 @@
     </form>
 </th:block>
 <script th:inline="javascript">
-    $(document).ready(function(){
+    $(document).ready(function () {
+        let roomName = [[${roomName}]];
 
-        var roomName = [[${roomName}]];
-
-        if(roomName != null)
+        if (roomName != null) {
             alert(roomName + "방이 개설되었습니다.");
+        }
 
-        $(".btn-create").on("click", function (e){
+        $(".btn-create").on("click", function (e) {
             e.preventDefault();
 
-            var name = $("input[name='name']").val();
+            let name = $("input[name='name']").val();
 
-            if(name == "")
-                alert("Please write the name.")
-            else
+            if (name == "") {
+                alert("Please write the name.");
+            } else {
                 $("form").submit();
+            }
         });
 
     });
