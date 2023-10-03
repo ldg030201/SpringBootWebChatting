@@ -23,6 +23,10 @@ public class ChatService {
     }
 
     public ChatRoomDTO findRoomById(String id) {
+        if (id == null) {
+            return new ChatRoomDTO();
+        }
+
         return chatRoomDTOMap.get(id);
     }
 

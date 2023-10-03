@@ -18,22 +18,16 @@ public class RoomController {
         this.chatService = chatService;
     }
 
-    @GetMapping(value = "/rooms")
-    public String rooms(Model model) {
-        model.addAttribute("list", chatService.findAllRooms());
-
-        return "chat/rooms";
-    }
-
     @PostMapping(value = "/room")
     public String create(@RequestParam String name, RedirectAttributes rttr) {
         rttr.addFlashAttribute("roomName", chatService.createChatRoomDTO(name));
 
-        return "redirect:/chat/rooms";
+        return "redirect:/chat/room";
     }
 
     @GetMapping("/room")
     public void getRoom(String roomId, Model model) {
+        model.addAttribute("list", chatService.findAllRooms());
         model.addAttribute("room", chatService.findRoomById(roomId));
     }
 }

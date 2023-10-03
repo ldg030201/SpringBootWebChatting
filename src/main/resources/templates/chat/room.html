@@ -13,6 +13,17 @@
     <link href="/css/room.css" rel="stylesheet">
     <script th:inline="javascript">
         $(() => {
+            $("#btn-create").on("click", function (e) {
+                e.preventDefault();
+                let name = $("input[name='name']").val();
+
+                if (name.trim() === '') {
+                    alert("이름을 작성 해주세요.");
+                } else {
+                    $("#form-create").submit();
+                }
+            });
+
             let roomId = [[${room.roomId}]];
             let roomName = [[${room.name}]];
             let username = [[${#authentication.principal.username}]];
@@ -77,26 +88,41 @@
     <div class="row clearfix">
         <div class="col-lg-12">
             <div class="card chat-app">
+                <div id="plist" class="people-list">
+                    <div class="input-group">
+                        <form th:action="@{/chat/room}" method="post" id="form-create" class="input-group mb-0">
+                            <input type="text" name="name" class="form-control">
+                            <span class="input-group-text" id="btn-create"><i class="fa fa-pencil"></i></span>
+                        </form>
+                    </div>
+                    <ul class="list-unstyled chat-list mt-2 mb-0" th:each="room : ${list}">
+                        <li class="clearfix">
+                            <div class="about">
+                                <div class="name"><a th:href="@{/chat/room(roomId=${room.roomId})}">[[${room.name}]]</a></div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
                 <div class="chat">
                     <div class="chat-header clearfix">
                         <div class="row">
                             <div class="col-lg-6">
                                 <div class="chat-about">
-                                    <h6 class="m-b-0">[[${room.name}]]</h6>
+                                    <h6 class="m-b-0" th:if="${room.roomId == null}">채팅방을 선택해주세요.</h6>
+                                    <h6 class="m-b-0" th:if="${room.roomId != null}">[[${room.name}]]</h6>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="chat-history">
-                        <ul class="m-b-0" id="msgArea">
-
-                        </ul>
+                        <ul class="m-b-0" id="msgArea" th:if="${room.roomId != null}"></ul>
                     </div>
                     <div class="chat-message clearfix">
                         <div class="input-group mb-0">
                             <input type="text" class="form-control" id="msg" placeholder="Enter text here...">
                             <div class="input-group-append">
-                                <span class="input-group-text" id="button-send"><i class="fa fa-send"></i></span>
+                                <span class="input-group-text" th:if="${room.roomId != null}"id="button-send"><i class="fa fa-send"></i></span>
+                                <span class="input-group-text" th:if="${room.roomId == null}"><i class="fa fa-send"></i></span>
                             </div>
                         </div>
                     </div>
