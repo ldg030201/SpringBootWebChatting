@@ -1,5 +1,6 @@
 package com.ldg.webchat.chat.web;
 
+import com.ldg.webchat.chat.entity.ChatRoomDTO;
 import com.ldg.webchat.chat.service.ChatService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -8,6 +9,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.Objects;
 
 @Controller
 @RequestMapping("/chat")
@@ -28,6 +31,8 @@ public class RoomController {
     @GetMapping("/room")
     public void getRoom(String roomId, Model model) {
         model.addAttribute("list", chatService.findAllRooms());
-        model.addAttribute("room", chatService.findRoomById(roomId));
+        ChatRoomDTO chatRoom = chatService.findRoomById(roomId);
+
+        model.addAttribute("room", Objects.requireNonNullElseGet(chatRoom, ChatRoomDTO::new));
     }
 }
