@@ -13,6 +13,12 @@
     <link href="/css/room.css" rel="stylesheet">
     <script th:inline="javascript">
         $(() => {
+            let username = '';
+
+            if ([[${room.roomId != null}]]) {
+                username = prompt("닉네임 입력 : ");
+            }
+
             $("#btn-create").on("click", function (e) {
                 e.preventDefault();
                 let name = $("input[name='name']").val();
@@ -25,17 +31,11 @@
             });
 
             let roomId = [[${room.roomId}]];
-            let roomName = [[${room.name}]];
-            let username = [[${#authentication.principal.username}]];
-
-            console.log(roomName + ", " + roomId + ", " + username);
 
             let sockJs = new SockJS("/stomp/chat");
             let stomp = Stomp.over(sockJs);
 
             stomp.connect({}, function () {
-                console.log("STOMP Connection")
-
                 stomp.subscribe("/sub/chat/room/" + roomId, function (chat) {
                     let content = JSON.parse(chat.body);
 
@@ -72,7 +72,6 @@
             $("#button-send").on("click", function (e) {
                 let msg = document.getElementById("msg");
 
-                console.log(username + ":" + msg.value);
                 stomp.send('/pub/chat/message', {}, JSON.stringify({
                     roomId: roomId,
                     message: msg.value,
