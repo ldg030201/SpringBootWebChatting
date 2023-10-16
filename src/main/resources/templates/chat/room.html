@@ -20,7 +20,7 @@
                 username = prompt("닉네임 입력 : ");
             }
 
-            $("#btn-create").on("click", function (e) {
+            $(document).on('click', '#btn-create', function (e) {
                 e.preventDefault();
                 let name = $("input[name='name']").val();
 
@@ -29,6 +29,17 @@
                 } else {
                     $("#form-create").submit();
                 }
+            }).on('click', '#button-send', function () {
+                let msg = document.getElementById("msg");
+
+                stomp.send('/pub/chat/message', {}, JSON.stringify({
+                    roomId: roomId,
+                    message: msg.value,
+                    writer: username
+                }));
+                msg.value = '';
+            }).on('click', '#close-button', function () {
+                $('#popup').hide();
             });
 
             let roomId = [[${room.roomId}]];
@@ -76,21 +87,10 @@
 
                 stomp.send('/pub/chat/enter', {}, JSON.stringify({roomId: roomId, writer: username}))
             });
-
-            $("#button-send").on("click", function (e) {
-                let msg = document.getElementById("msg");
-
-                stomp.send('/pub/chat/message', {}, JSON.stringify({
-                    roomId: roomId,
-                    message: msg.value,
-                    writer: username
-                }));
-                msg.value = '';
-            });
         });
 
         function fnShowQRCode() {
-            let qrcode = new QRCode("test", {
+            let qrcode = new QRCode("qr_code", {
                 text: window.location.href,
                 width: 500,
                 height: 500,
@@ -99,12 +99,13 @@
                 correctLevel : QRCode.CorrectLevel.H
             });
 
+            qrcode.clear();
             qrcode.makeImage();
+            $('#popup').show();
         }
     </script>
 </head>
 <body>
-<div id="test"></div>
 <div class="container p-0">
     <div class="card">
         <div class="row g-0">
@@ -149,6 +150,13 @@
                 </div>
             </div>
         </div>
+    </div>
+</div>
+<div id="popup">
+    <div id="popup-content">
+        <h2>레이어 팝업 내용</h2>
+        <div id="qr_code"></div>
+        <button id="close-button">닫기</button>
     </div>
 </div>
 </body>
