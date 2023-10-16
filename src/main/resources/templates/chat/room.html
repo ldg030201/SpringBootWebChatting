@@ -18,6 +18,10 @@
 
             if ([[${room.roomId != null}]]) {
                 username = prompt("닉네임 입력 : ");
+
+                if (username === null || username === '') {
+                    username = "익명";
+                }
             }
 
             $(document).on('click', '#btn-create', function (e) {
