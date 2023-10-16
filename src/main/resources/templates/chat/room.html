@@ -91,6 +91,11 @@
         });
 
         function fnShowQRCode() {
+            if ([[${room.roomId == null}]]) {
+                alert("우선 채팅방을 입장해주세요.");
+                return false;
+            }
+
             let qrcode = new QRCode("qr_code", {
                 text: window.location.href,
                 width: 500,
@@ -136,6 +141,9 @@
                             <strong th:if="${room.roomId == null}">채팅방을 선택해주세요.</strong>
                             <strong th:if="${room.roomId != null}">[[${room.name}]]</strong>
                         </div>
+                        <div>
+                            <button class="btn btn-primary btn-lg mr-1 px-3" onclick="fnShowQRCode();">QR</button>
+                        </div>
                     </div>
                 </div>
                 <div class="position-relative">
@@ -154,7 +162,7 @@
 </div>
 <div id="popup">
     <div id="popup-content">
-        <h2>레이어 팝업 내용</h2>
+        <h2>채팅방 입장 QR 코드</h2>
         <div id="qr_code"></div>
         <button id="close-button">닫기</button>
     </div>
