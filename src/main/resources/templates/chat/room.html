@@ -39,6 +39,7 @@
                 }));
                 msg.value = '';
             }).on('click', '#close-button', function () {
+                $('#qr_code').empty();
                 $('#popup').hide();
             });
 
@@ -99,7 +100,6 @@
                 correctLevel : QRCode.CorrectLevel.H
             });
 
-            qrcode.clear();
             qrcode.makeImage();
             $('#popup').show();
         }
