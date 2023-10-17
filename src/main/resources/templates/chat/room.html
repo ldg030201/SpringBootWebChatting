@@ -15,6 +15,9 @@
     <script th:inline="javascript">
         $(() => {
             let username = '';
+            let roomId = [[${room.roomId}]];
+            let sockJs = new SockJS("/stomp/chat");
+            let stomp = Stomp.over(sockJs);
 
             if ([[${room.roomId != null}]]) {
                 username = prompt("닉네임 입력 : ");
@@ -22,6 +25,17 @@
                 if (username === null || username === '') {
                     username = "익명";
                 }
+            }
+
+            function fnSendMessage() {
+                let msg = document.getElementById("msg");
+
+                stomp.send('/pub/chat/message', {}, JSON.stringify({
+                    roomId: roomId,
+                    message: msg.value,
+                    writer: username
+                }));
+                msg.value = '';
             }
 
             $(document).on('click', '#btn-create', function (e) {
@@ -34,23 +48,15 @@
                     $("#form-create").submit();
                 }
             }).on('click', '#button-send', function () {
-                let msg = document.getElementById("msg");
-
-                stomp.send('/pub/chat/message', {}, JSON.stringify({
-                    roomId: roomId,
-                    message: msg.value,
-                    writer: username
-                }));
-                msg.value = '';
+                fnSendMessage();
             }).on('click', '#close-button', function () {
                 $('#qr_code').empty();
                 $('#popup').hide();
+            }).on('keypress', '#msg', function (e) {
+                if (e.keyCode && e.keyCode == 13) {
+                    fnSendMessage();
+                }
             });
-
-            let roomId = [[${room.roomId}]];
-
-            let sockJs = new SockJS("/stomp/chat");
-            let stomp = Stomp.over(sockJs);
 
             stomp.connect({}, function () {
                 stomp.subscribe("/sub/chat/room/" + roomId, function (chat) {
@@ -64,7 +70,7 @@
                             <div class="chat-message-right pb-4">
                                 <div>
                                     <img src="/images/user_icon1.png" class="rounded-circle mr-1" alt="Chris Wood" width="40" height="40">
-                                    <div class="text-muted small text-nowrap mt-2">00:00</div>
+                                    <div class="text-muted small text-nowrap mt-2">${fnGetNowTime()}</div>
                                 </div>
                                 <div class="flex-shrink-1 bg-light rounded py-2 px-3 mr-3">
                                     <div class="font-weight-bold mb-1">${writer}</div>
@@ -77,7 +83,7 @@
                             <div class="chat-message-left pb-4">
                                 <div>
                                     <img src="/images/user_icon2.png" class="rounded-circle mr-1" alt="Sharon Lessman" width="40" height="40">
-                                    <div class="text-muted small text-nowrap mt-2">00:00</div>
+                                    <div class="text-muted small text-nowrap mt-2">${fnGetNowTime()}</div>
                                 </div>
                                 <div class="flex-shrink-1 bg-light rounded py-2 px-3 ml-3">
                                     <div class="font-weight-bold mb-1">${writer}</div>
@@ -112,9 +118,14 @@
             qrcode.makeImage();
             $('#popup').show();
         }
+        
+        function fnGetNowTime() {
+            const nowTime = new Date();
+            let h = ('0' + nowTime.getHours()).slice(-2);
+            let m = ('0' + nowTime.getMinutes()).slice(-2);
 
-        //TODO 엔터키 전송 추가
-        //TODO 전송 혹은 받은 후 스크롤 다운 추가
+            return h + ':' + m;
+        }
     </script>
 </head>
 <body>
