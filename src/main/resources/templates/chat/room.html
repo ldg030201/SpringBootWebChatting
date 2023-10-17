@@ -94,6 +94,8 @@
                     }
 
                     $("#msgArea").append(str);
+
+                    $('#msgArea').scrollTop(9999999999999999999999999999999); //MAX값이 먹지 않아 넣어놓은 임시값
                 });
 
                 stomp.send('/pub/chat/enter', {}, JSON.stringify({roomId: roomId, writer: username}))
