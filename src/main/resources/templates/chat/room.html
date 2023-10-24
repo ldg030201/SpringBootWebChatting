@@ -7,6 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script type="text/javascript" src="https://ssl.gstatic.com/trends_nrtr/3523_RC01/embed_loader.js"></script>
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
     <script src="/js/stomp.min2.3.3.js"></script>
     <script src="/js/jquery-3.5.1.min.js"></script>
@@ -52,6 +53,9 @@
             }).on('click', '#close-button', function () {
                 $('#qr_code').empty();
                 $('#popup').hide();
+            }).on('click', '#close-button2', function () {
+
+                $('#popup2').hide();
             }).on('keypress', '#msg', function (e) {
                 if (e.keyCode && e.keyCode == 13) {
                     fnSendMessage();
@@ -128,6 +132,45 @@
 
             return h + ':' + m;
         }
+
+        function fnShowTrend() {
+            let $html;
+
+            $.ajax({
+                url: '/api/google-trends-rss'
+                ,dataType: 'text'
+                ,async: false
+                ,success: function (data) {
+                    let xmlDoc = $.parseXML(data);
+
+                    $html = $(`
+                        <table>
+                            <tr>
+                                <th>주제</th>
+                                <th>검색된<br>횟수</th>
+                                <th>내용</th>
+                            </tr>
+                        </table>
+                    `);
+
+                    $(xmlDoc).find('item').each(function () {
+                        let title = $(this).find('title').text();
+                        let traffic = $(this).find('ht\\:approx_traffic').text();
+                        let description = $(this).find('description').text();
+                        $html.append(`
+                            <tr>
+                                <td>${title}</td>
+                                <td>${traffic}</td>
+                                <td>${description}</td>
+                            </tr>
+                        `);
+                    });
+                }
+            });
+
+            $('#trend-content').html($html);
+            $('#popup2').show();
+        }
     </script>
 </head>
 <body>
@@ -180,11 +223,20 @@
         </div>
     </div>
 </div>
-<div id="popup">
-    <div id="popup-content">
+<div id="popup" class="popup">
+    <div class="popup-content">
         <h2>채팅방 입장 QR 코드</h2>
         <div id="qr_code"></div>
         <button id="close-button">닫기</button>
+    </div>
+</div>
+<div id="popup2" class="popup">
+    <div class="popup-content">
+        <h2>대화 주제 추천</h2>
+        <div id="trend-content">
+
+        </div>
+        <button id="close-button2">닫기</button>
     </div>
 </div>
 </body>
