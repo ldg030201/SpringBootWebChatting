@@ -6,15 +6,22 @@ import org.springframework.stereotype.Repository;
 import javax.annotation.PostConstruct;
 import java.util.*;
 
+/**
+ * 채팅 서비스
+ */
 @Repository //추후 db로 변경
 public class ChatService {
-    private Map<String, ChatRoomDTO> chatRoomDTOMap;
+    private Map<String, ChatRoomDTO> chatRoomDTOMap; //여러 방을 보관하는 Map
 
     @PostConstruct
     private void init() {
         chatRoomDTOMap = new LinkedHashMap<>();
     }
 
+    /**
+     * 모든 채팅방 찾기
+     * @return 채팅방 목록
+     */
     public List<ChatRoomDTO> findAllRooms() {
         List<ChatRoomDTO> result = new ArrayList<>(chatRoomDTOMap.values());
         Collections.reverse(result);
@@ -22,6 +29,11 @@ public class ChatService {
         return result;
     }
 
+    /**
+     * 채팅방 아이디를 이용하여 방 찾기
+     * @param id 방 아이디
+     * @return
+     */
     public ChatRoomDTO findRoomById(String id) {
         if (id == null) {
             return new ChatRoomDTO();
@@ -30,6 +42,11 @@ public class ChatService {
         return chatRoomDTOMap.get(id);
     }
 
+    /**
+     * 채팅방 만들기
+     * @param name 채팅방 제목
+     * @return 만들어진 채팅방 값 ChatRoomDTO 사용
+     */
     public ChatRoomDTO createChatRoomDTO(String name) {
         ChatRoomDTO room = ChatRoomDTO.create(name);
         chatRoomDTOMap.put(room.getRoomId(), room);
