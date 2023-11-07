@@ -1,8 +1,8 @@
 package com.ldg.webchat.api.web;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.ldg.webchat.api.entity.Chat;
+import com.ldg.webchat.api.repository.ChatRepository;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -11,6 +11,12 @@ import org.springframework.web.client.RestTemplate;
 @RestController
 @RequestMapping("/api")
 public class APIController {
+    private final ChatRepository chatRepository;
+
+    public APIController(ChatRepository chatRepository) {
+        this.chatRepository = chatRepository;
+    }
+
     /**
      * 구글 트렌드 rss값을 html 코드로 변환
      * @return 변환된 html 코드값을 String타입으로 리턴
@@ -21,5 +27,13 @@ public class APIController {
 
         RestTemplate restTemplate = new RestTemplate();
         return restTemplate.getForObject(url, String.class);
+    }
+
+    @PostMapping("/jpa_test")
+    public void jpaTest(@RequestParam("msg") String msg) {
+        Chat chat = new Chat();
+        chat.setChat(msg);
+
+        chatRepository.save(chat);
     }
 }

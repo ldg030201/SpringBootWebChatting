@@ -133,6 +133,22 @@
             return h + ':' + m;
         }
 
+        function fnSaveTest(msg) {
+            $.ajax({
+                url: '/api/jpa_test'
+                ,type: 'post'
+                ,data: {
+                    msg: msg
+                }
+                ,success: () => {
+                    alert("저장 성공");
+                }
+                ,error: () => {
+                    alert("저장 에러 발생");
+                }
+            });
+        }
+
         function fnShowTrend() {
             let $html;
 
