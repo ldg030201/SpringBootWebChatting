@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -18,5 +19,9 @@ public class Chat {
     @JsonIgnore
     private Integer id;
 
-    private String chat;
+    private String message;
+
+    private Integer registrationId;
+
+    private LocalDateTime registrationDatetime;
 }

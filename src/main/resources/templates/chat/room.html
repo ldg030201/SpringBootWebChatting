@@ -31,6 +31,18 @@
             function fnSendMessage() {
                 let msg = document.getElementById("msg");
 
+                $.ajax({
+                    url: '/api/insert-message'
+                    ,type: 'post'
+                    ,async: false
+                    ,data: {
+                        message: msg.value
+                    }
+                    ,error: () => {
+                        console.error('문자 전송 중 오류 발생.');
+                    }
+                });
+
                 stomp.send('/pub/chat/message', {}, JSON.stringify({
                     roomId: roomId,
                     message: msg.value,
@@ -124,29 +136,13 @@
             qrcode.makeImage();
             $('#popup').show();
         }
-        
+
         function fnGetNowTime() {
             const nowTime = new Date();
             let h = ('0' + nowTime.getHours()).slice(-2);
             let m = ('0' + nowTime.getMinutes()).slice(-2);
 
             return h + ':' + m;
-        }
-
-        function fnSaveTest(msg) {
-            $.ajax({
-                url: '/api/jpa_test'
-                ,type: 'post'
-                ,data: {
-                    msg: msg
-                }
-                ,success: () => {
-                    alert("저장 성공");
-                }
-                ,error: () => {
-                    alert("저장 에러 발생");
-                }
-            });
         }
 
         function fnShowTrend() {

@@ -1,7 +1,6 @@
 package com.ldg.webchat.api.web;
 
-import com.ldg.webchat.api.entity.Chat;
-import com.ldg.webchat.api.repository.ChatRepository;
+import com.ldg.webchat.api.service.APIService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -11,10 +10,10 @@ import org.springframework.web.client.RestTemplate;
 @RestController
 @RequestMapping("/api")
 public class APIController {
-    private final ChatRepository chatRepository;
+    private final APIService apiService;
 
-    public APIController(ChatRepository chatRepository) {
-        this.chatRepository = chatRepository;
+    public APIController(APIService apiService) {
+        this.apiService = apiService;
     }
 
     /**
@@ -29,11 +28,10 @@ public class APIController {
         return restTemplate.getForObject(url, String.class);
     }
 
-    @PostMapping("/jpa_test")
-    public void jpaTest(@RequestParam("msg") String msg) {
-        Chat chat = new Chat();
-        chat.setChat(msg);
+    @PostMapping("/insert-message")
+    public void jpaTest(@RequestParam("message") String message) {
+        Integer userId = 1;
 
-        chatRepository.save(chat);
+        apiService.insertMessage(message, userId);
     }
 }
