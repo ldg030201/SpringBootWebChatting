@@ -17,6 +17,7 @@ public class ChatRoomDTO {
     private String roomId; //방 번호
     private String name; //방 제목
     private Set<WebSocketSession> sessions = new HashSet<>();
+    private String userId;
 
     /**
      * 방을 만들어주는 메소드

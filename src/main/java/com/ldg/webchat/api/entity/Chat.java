@@ -20,7 +20,7 @@ public class Chat {
 
     private String message;
 
-    private Integer registrationId;
+    private String registrationId;
 
     private LocalDateTime registrationDatetime;
 }

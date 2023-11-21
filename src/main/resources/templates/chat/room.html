@@ -16,6 +16,7 @@
     <script th:inline="javascript">
         $(() => {
             let username = '';
+            let userId = [[${room.userId}]];
             let roomId = [[${room.roomId}]];
             let sockJs = new SockJS("/stomp/chat");
             let stomp = Stomp.over(sockJs);
@@ -38,6 +39,7 @@
                     ,data: {
                         message: msg.value
                         ,roomId: roomId
+                        ,userId: userId
                     }
                     ,error: () => {
                         console.error('문자 전송 중 오류 발생.');
