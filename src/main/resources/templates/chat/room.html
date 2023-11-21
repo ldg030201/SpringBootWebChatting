@@ -37,6 +37,7 @@
                     ,async: false
                     ,data: {
                         message: msg.value
+                        ,roomId: roomId
                     }
                     ,error: () => {
                         console.error('문자 전송 중 오류 발생.');
@@ -49,6 +50,60 @@
                     writer: username
                 }));
                 msg.value = '';
+            }
+
+            function fnLoadMessage() {
+                $.ajax({
+                    url: '/api/select-message'
+                    ,type: 'post'
+                    ,async: false
+                    ,data: {
+                        roomId: roomId
+                    }
+                    ,success: (res) => {
+                        res.forEach(e => {
+                            fnAppendMessage(e.registrationId, e.message, e.registrationDatetime.split('T')[1].substring(0, 5));
+                        });
+                    }
+                    ,error: () => {
+                        console.log("문자 내용 불러오기 중 오류 발생.");
+                    }
+                });
+            }
+
+            function fnAppendMessage(writer, message, sendTime) {
+                let str;
+                if (writer === username) {
+                    str = `
+                            <div class="chat-message-right pb-4">
+                                <div>
+                                    <img src="/images/user_icon1.png" class="rounded-circle mr-1" alt="Chris Wood" width="40" height="40">
+                                    <div class="text-muted small text-nowrap mt-2">${sendTime}</div>
+                                </div>
+                                <div class="flex-shrink-1 bg-light rounded py-2 px-3 mr-3">
+                                    <div class="font-weight-bold mb-1">${writer}</div>
+                                    ${message}
+                                </div>
+                            </div>
+                        `;
+                } else {
+                    str = `
+                            <div class="chat-message-left pb-4">
+                                <div>
+                                    <img src="/images/user_icon2.png" class="rounded-circle mr-1" alt="Sharon Lessman" width="40" height="40">
+                                    <div class="text-muted small text-nowrap mt-2">${sendTime}</div>
+                                </div>
+                                <div class="flex-shrink-1 bg-light rounded py-2 px-3 ml-3">
+                                    <div class="font-weight-bold mb-1">${writer}</div>
+                                    ${message}
+                                </div>
+                            </div>
+                        `;
+                }
+
+                $("#msgArea").append(str);
+
+                $('#msgArea').scrollTop(9999999999999999999999999999999); //MAX값이 먹지 않아 넣어놓은 임시값
             }
 
             $(document).on('click', '#btn-create', function (e) {
@@ -79,43 +134,13 @@
                     let content = JSON.parse(chat.body);
 
                     let writer = content.writer;
-                    let str;
-
-                    if (writer === username) {
-                        str = `
-                            <div class="chat-message-right pb-4">
-                                <div>
-                                    <img src="/images/user_icon1.png" class="rounded-circle mr-1" alt="Chris Wood" width="40" height="40">
-                                    <div class="text-muted small text-nowrap mt-2">${fnGetNowTime()}</div>
-                                </div>
-                                <div class="flex-shrink-1 bg-light rounded py-2 px-3 mr-3">
-                                    <div class="font-weight-bold mb-1">${writer}</div>
-                                    ${content.message}
-                                </div>
-                            </div>
-                        `;
-                    } else {
-                        str = `
-                            <div class="chat-message-left pb-4">
-                                <div>
-                                    <img src="/images/user_icon2.png" class="rounded-circle mr-1" alt="Sharon Lessman" width="40" height="40">
-                                    <div class="text-muted small text-nowrap mt-2">${fnGetNowTime()}</div>
-                                </div>
-                                <div class="flex-shrink-1 bg-light rounded py-2 px-3 ml-3">
-                                    <div class="font-weight-bold mb-1">${writer}</div>
-                                    ${content.message}
-                                </div>
-                            </div>
-                        `;
-                    }
-
-                    $("#msgArea").append(str);
-
-                    $('#msgArea').scrollTop(9999999999999999999999999999999); //MAX값이 먹지 않아 넣어놓은 임시값
+                    fnAppendMessage(writer, content.message, fnGetNowTime());
                 });
 
                 stomp.send('/pub/chat/enter', {}, JSON.stringify({roomId: roomId, writer: username}))
             });
+
+            fnLoadMessage();
         });
 
         function fnShowQRCode() {

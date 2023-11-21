@@ -5,6 +5,7 @@ import com.ldg.webchat.api.repository.ChatRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service("APIService")
 public class APIService {
@@ -14,13 +15,18 @@ public class APIService {
         this.chatRepository = chatRepository;
     }
 
-    public void insertMessage(String message, Integer userId) {
+    public void insertMessage(String message, Integer userId, String roomId) {
         Chat chat = new Chat();
 
         chat.setMessage(message);
+        chat.setRoomId(roomId);
         chat.setRegistrationId(userId);
         chat.setRegistrationDatetime(LocalDateTime.now());
 
         chatRepository.save(chat);
+    }
+
+    public List<Chat> selectMessage(String roomId) {
+        return chatRepository.findByRoomId(roomId);
     }
 }

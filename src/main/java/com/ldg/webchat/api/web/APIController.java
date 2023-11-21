@@ -1,8 +1,11 @@
 package com.ldg.webchat.api.web;
 
+import com.ldg.webchat.api.entity.Chat;
 import com.ldg.webchat.api.service.APIService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.List;
 
 /**
  * api 컨트롤러
@@ -29,9 +32,14 @@ public class APIController {
     }
 
     @PostMapping("/insert-message")
-    public void jpaTest(@RequestParam("message") String message) {
+    public void insertMessage(@RequestParam("message") String message, @RequestParam("roomId") String roomId) {
         Integer userId = 1;
 
-        apiService.insertMessage(message, userId);
+        apiService.insertMessage(message, userId, roomId);
+    }
+
+    @PostMapping("/select-message")
+    public List<Chat> selectMessage(@RequestParam("roomId") String roomId) {
+        return apiService.selectMessage(roomId);
     }
 }
