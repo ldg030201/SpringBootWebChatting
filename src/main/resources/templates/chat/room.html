@@ -39,7 +39,8 @@
                     ,data: {
                         message: msg.value
                         ,roomId: roomId
-                        ,userId: userId
+                        ,registrationId: userId
+                        ,registrationName: username
                     }
                     ,error: () => {
                         console.error('문자 전송 중 오류 발생.');
@@ -139,7 +140,7 @@
                     fnAppendMessage(writer, content.message, fnGetNowTime());
                 });
 
-                stomp.send('/pub/chat/enter', {}, JSON.stringify({roomId: roomId, writer: username}))
+                stomp.send('/pub/chat/enter', {}, JSON.stringify({roomId: roomId, writer: username, writerId: userId}))
             });
 
             fnLoadMessage();

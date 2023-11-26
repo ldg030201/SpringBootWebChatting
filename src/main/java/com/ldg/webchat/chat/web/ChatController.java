@@ -1,11 +1,9 @@
 package com.ldg.webchat.chat.web;
 
 import com.ldg.webchat.chat.entity.ChatMessageDTO;
-import com.ldg.webchat.user.entity.UserDTO;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.SessionAttribute;
 
 /**
  * 채팅 메인 컨트롤러
@@ -25,6 +23,7 @@ public class ChatController {
     @MessageMapping(value = "/chat/enter")
     public void enter(ChatMessageDTO message) {
         message.setMessage(message.getWriter() + "님이 채팅방에 참여하였습니다.");
+
         template.convertAndSend("/sub/chat/room/" + message.getRoomId(), message);
     }
 
@@ -33,8 +32,7 @@ public class ChatController {
      * @param message 작성한 메시지 담은 객체
      */
     @MessageMapping(value = "/chat/message")
-    public void message(ChatMessageDTO message, @SessionAttribute("userInfo") UserDTO userInfo) {
-        message.setWriterId(userInfo.getUserId());
+    public void message(ChatMessageDTO message) {
         template.convertAndSend("/sub/chat/room/" + message.getRoomId(), message);
     }
 }

@@ -32,8 +32,8 @@ public class APIController {
     }
 
     @PostMapping("/insert-message")
-    public void insertMessage(@RequestParam("message") String message, @RequestParam("roomId") String roomId, @RequestParam("userId") String userId) {
-        apiService.insertMessage(message, userId, roomId);
+    public void insertMessage(Chat chat) {
+        apiService.insertMessage(chat);
     }
 
     @PostMapping("/select-message")

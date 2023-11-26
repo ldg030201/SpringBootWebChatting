@@ -22,5 +22,7 @@ public class Chat {
 
     private String registrationId;
 
+    private String registrationName;
+
     private LocalDateTime registrationDatetime;
 }

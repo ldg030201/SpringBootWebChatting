@@ -15,12 +15,7 @@ public class APIService {
         this.chatRepository = chatRepository;
     }
 
-    public void insertMessage(String message, String userId, String roomId) {
-        Chat chat = new Chat();
-
-        chat.setMessage(message);
-        chat.setRoomId(roomId);
-        chat.setRegistrationId(userId);
+    public void insertMessage(Chat chat) {
         chat.setRegistrationDatetime(LocalDateTime.now());
 
         chatRepository.save(chat);
