@@ -216,6 +216,15 @@
             $('#trend-content').html($html);
             $('#popup2').show();
         }
+
+        function fnShowCanvas() {
+            if ([[${room.roomId == null}]]) {
+                alert("우선 채팅방을 입장해주세요.");
+                return false;
+            }
+
+            $('#popup3').show();
+        }
     </script>
 </head>
 <body>
@@ -258,6 +267,12 @@
                         <div class="flex-grow-1 pl-3">
                             <strong th:if="${room.roomId == null}">채팅방을 선택해주세요.</strong>
                             <strong th:if="${room.roomId != null}">[[${room.name}]]</strong>
+                        </div>
+                        <div>
+                            <button class="btn btn-primary btn-lg mr-1 px-3" onclick="fnShowTrend();">대화 주제 추천</button>
+                        </div>
+                        <div>
+                            <button class="btn btn-primary btn-lg mr-1 px-3" onclick="fnShowCanvas();">그림 그리기</button>
                         </div>
                         <div>
                             <button class="btn btn-primary btn-lg mr-1 px-3" onclick="fnShowQRCode();">QR</button>
