@@ -47,8 +47,13 @@ public class ChatService {
      * @param name 채팅방 제목
      * @return 만들어진 채팅방 값 ChatRoomDTO 사용
      */
-    public ChatRoomDTO createChatRoomDTO(String name) {
-        ChatRoomDTO room = ChatRoomDTO.create(name);
+    public ChatRoomDTO createChatRoomDTO(String name, Boolean isSave) {
+        ChatRoomDTO room = new ChatRoomDTO();
+
+        room.setRoomId(UUID.randomUUID().toString());
+        room.setName(name);
+        room.setIsSave(isSave);
+
         chatRoomDTOMap.put(room.getRoomId(), room);
 
         return room;

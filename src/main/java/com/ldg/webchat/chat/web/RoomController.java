@@ -24,8 +24,8 @@ public class RoomController {
     }
 
     @PostMapping(value = "/room")
-    public String create(@RequestParam String name, RedirectAttributes rttr) {
-        rttr.addFlashAttribute("roomName", chatService.createChatRoomDTO(name));
+    public String create(@RequestParam String name, @RequestParam Boolean isSave, RedirectAttributes rttr) {
+        rttr.addFlashAttribute("roomName", chatService.createChatRoomDTO(name, isSave));
 
         return "redirect:/chat/room";
     }
