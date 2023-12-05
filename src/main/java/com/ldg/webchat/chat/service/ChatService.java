@@ -50,6 +50,10 @@ public class ChatService {
     public ChatRoomDTO createChatRoomDTO(String name, Boolean isSave) {
         ChatRoomDTO room = new ChatRoomDTO();
 
+        if (isSave) {
+            name = "[저장]" + name;
+        }
+
         room.setRoomId(UUID.randomUUID().toString());
         room.setName(name);
         room.setIsSave(isSave);
